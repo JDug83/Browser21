@@ -1,2939 +1,563 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
-<html lang="en-GB" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GazStudios — AI for everyone</title>
-  <meta name="description" content="GazStudios — free AI chat and coding tools that open instantly in your browser. GazChat Nano, GazCode 26 and more. No sign-up, no subscription.">
-  <meta name="theme-color" content="#0a0a0e">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="GazStudios — AI for everyone">
-  <meta property="og:description" content="Free AI chat and coding tools that open instantly in your browser. No sign-up, no subscription.">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Set the theme before anything draws, so light-mode users don't see a dark flash.
-       Also marks that JavaScript is running, so fade-in content is only hidden when it can be revealed. -->
-  <script>
-    (function () {
-      var t = null;
-      try { t = localStorage.getItem('gaz_theme'); } catch (e) {}
-      if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      document.documentElement.classList.toggle('dark', t === 'dark');
-      document.documentElement.classList.add('js');
-    })();
-  </script>
-
-  <!-- GazStudios Tab Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f7bd44'/%3E%3Cstop offset='100%25' stop-color='%23c58f1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23121217'/%3E%3Crect width='30' height='30' x='1' y='1' rx='7' fill='none' stroke='url(%23g)' stroke-width='1.5' stroke-opacity='0.6'/%3E%3Cg transform='translate(4,4)' stroke='url(%23g)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5z' fill='url(%23g)' fill-opacity='0.25'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/g%3E%3C/svg%3E">
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#fffbf0',
-              100: '#fef5d6',
-              200: '#fce8ad',
-              300: '#fad67b',
-              400: '#f7bd44',
-              500: '#e5a93c',
-              600: '#c58f1f',
-              700: '#9b6c16',
-              800: '#7d5516',
-              900: '#674616',
-            },
-            darkbg: '#0a0a0c',
-            darkcard: '#121217',
-            darkborder: '#1f1f28'
-          },
-
-          fontFamily: {
-            sans: [
-              'Inter',
-              '-apple-system',
-              'BlinkMacSystemFont',
-              'Segoe UI',
-              'Roboto',
-              'sans-serif'
-            ],
-            mono: [
-              'JetBrains Mono',
-              'Fira Code',
-              'monospace'
-            ]
-          },
-
-          animation: {
-            'shimmer': 'shimmer 5s linear infinite',
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float-slow': 'float 8s ease-in-out infinite',
-            'spin-slow': 'spin 12s linear infinite'
-          },
-
-          keyframes: {
-            shimmer: {
-              '0%': {
-                backgroundPosition: '0% 50%'
-              },
-              '50%': {
-                backgroundPosition: '100% 50%'
-              },
-              '100%': {
-                backgroundPosition: '0% 50%'
-              }
-            },
-
-            float: {
-              '0%, 100%': {
-                transform: 'translateY(0px)'
-              },
-              '50%': {
-                transform: 'translateY(-10px)'
-              }
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
-    }
-
-    /* =========================================
-       GLASSMORPHISM
-       ========================================= */
-
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(228, 228, 231, 0.7);
-    }
-
-    .dark .glass-panel {
-      background: rgba(18, 18, 23, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    /* =========================================
-       SPOTLIGHT CARDS
-       ========================================= */
-
-    .spotlight-card {
-      position: relative;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(228, 228, 231, 0.9);
-
-      transition:
-        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-        box-shadow 0.25s ease,
-        border-color 0.2s ease;
-
-      will-change: transform;
-    }
-
-    .dark .spotlight-card {
-      background: rgba(18, 18, 23, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .spotlight-card::before {
-      content: "";
-
-      position: absolute;
-      inset: 0;
-
-      border-radius: inherit;
-
-      background:
-        radial-gradient(
-          450px circle at var(--gx, 50%) var(--gy, 50%),
-          rgba(229, 169, 60, 0.18),
-          transparent 55%
-        );
-
-      opacity: 0;
-
-      transition: opacity 0.3s ease;
-
-      pointer-events: none;
-
-      z-index: 1;
-    }
-
-    .spotlight-card:hover::before {
-      opacity: 1;
-    }
-
-    .spotlight-card:hover {
-      box-shadow:
-        0 20px 40px -15px rgba(229, 169, 60, 0.18);
-
-      border-color:
-        rgba(229, 169, 60, 0.4);
-    }
-
-    /* =========================================
-       AURORA ORBS
-       ========================================= */
-
-    .aurora-orb {
-      position: absolute;
-
-      border-radius: 50%;
-
-      filter: blur(100px);
-
-      opacity: 0.45;
-
-      pointer-events: none;
-
-      transition:
-        transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
-    }
-
-    .dark .aurora-orb {
-      opacity: 0.35;
-      filter: blur(120px);
-    }
-
-    /* =========================================
-       SHIMMER TEXT
-       ========================================= */
-
-    .shimmer-text {
-      background:
-        linear-gradient(
-          110deg,
-          #b47b14 0%,
-          #e5a93c 25%,
-          #ffe7a3 50%,
-          #e5a93c 75%,
-          #b47b14 100%
-        );
-
-      background-size: 220% 100%;
-
-      -webkit-background-clip: text;
-      background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-
-      animation:
-        shimmer 6s linear infinite;
-    }
-
-    .dark .shimmer-text {
-      background:
-        linear-gradient(
-          110deg,
-          #e5a93c 0%,
-          #fad67b 25%,
-          #ffffff 50%,
-          #f7bd44 75%,
-          #c58f1f 100%
-        );
-
-      background-size: 220% 100%;
-
-      -webkit-background-clip: text;
-      background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* =========================================
-       GLOW BORDER
-       ========================================= */
-
-    .glow-border {
-      position: relative;
-    }
-
-    .glow-border::after {
-      content: '';
-
-      position: absolute;
-      inset: -1px;
-
-      border-radius: inherit;
-
-      padding: 1px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(229, 169, 60, 0.6),
-          transparent 50%,
-          rgba(229, 169, 60, 0.2)
-        );
-
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-
-      mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-
-      pointer-events: none;
-    }
-
-    /* =========================================
-       TERMINAL CURSOR
-       ========================================= */
-
-    .typing-cursor::after {
-      content: "▋";
-
-      color: #e5a93c;
-
-      animation:
-        blink 1s step-start infinite;
-
-      margin-left: 2px;
-    }
-
-    @keyframes blink {
-      50% {
-        opacity: 0;
-      }
-    }
-
-    /* =========================================
-       REVEAL ANIMATION
-       ========================================= */
-
-    /* Only hidden when JS is running — if the script fails, content still shows */
-    .js .reveal-item {
-      opacity: 0;
-
-      transform:
-        translateY(24px)
-        scale(0.98);
-
-      transition:
-        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .js .reveal-item.visible {
-      opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
-    }
-
-    /* =========================================
-       MOBILE BOTTOM NAV
-       ========================================= */
-
-    .mobile-bottom-nav {
-      display: flex;
-    }
-
-    @media (min-width: 768px) {
-      .mobile-bottom-nav {
-        display: none !important;
-      }
-    }
-
-    @media (max-width: 767px) {
-      body {
-        padding-bottom: 82px;
-      }
-    }
-
-    .mobile-nav-item {
-      -webkit-tap-highlight-color: transparent;
-      transition:
-        transform 0.15s ease,
-        color 0.2s ease;
-    }
-
-    .mobile-nav-item:active {
-      transform: scale(0.92);
-    }
-
-    /* Keep center Christmas button visually centered */
-    .mobile-christmas-item {
-      position: relative;
-      z-index: 2;
-    }
-
-    /* =========================================
-       WHOLE-CARD LINKS
-       The card's "Open →" link stretches over the whole card,
-       so clicking anywhere on the card works.
-       ========================================= */
-
-    .card-link::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      z-index: 2;
-    }
-
-    /* Clear keyboard focus ring */
-    :focus-visible {
-      outline: 2px solid #e5a93c;
-      outline-offset: 3px;
-      border-radius: 8px;
-    }
-
-    /* Respect the "reduce motion" setting */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-      .js .reveal-item { opacity: 1; transform: none; }
-      .aurora-orb, #ambientCanvas { display: none; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#eef2f8">
+<title>GlassTab</title>
+<style>
+:root{
+ --fg:#0b0b0f;--sub:rgba(60,60,67,.72);--blue:#0a7aff;--line:rgba(60,60,67,.16);
+ --wall:radial-gradient(120% 70% at 15% 10%,#b8d4ff 0,rgba(184,212,255,0) 55%),radial-gradient(90% 60% at 90% 35%,#ffd0e6 0,rgba(255,208,230,0) 55%),radial-gradient(110% 70% at 40% 100%,#c6f0dc 0,rgba(198,240,220,0) 60%),#eef2f8;
+ --g-bg:rgba(255,255,255,.40);--g-strong:rgba(255,255,255,.72);--g-brd:rgba(255,255,255,.65);--g-hi:rgba(255,255,255,.9);
+ --g-shadow:0 10px 30px rgba(20,30,60,.16),0 1px 3px rgba(20,30,60,.08);
+ --dim:rgba(240,243,250,.35);
+}
+@media (prefers-color-scheme:dark){:root{
+ --fg:#f5f5f7;--sub:rgba(235,235,245,.62);--blue:#3b9bff;--line:rgba(255,255,255,.12);
+ --wall:radial-gradient(120% 70% at 15% 10%,#1d3a78 0,rgba(29,58,120,0) 55%),radial-gradient(90% 60% at 90% 35%,#4a1f55 0,rgba(74,31,85,0) 55%),radial-gradient(110% 70% at 40% 100%,#0f4b3d 0,rgba(15,75,61,0) 60%),#07080d;
+ --g-bg:rgba(36,36,44,.38);--g-strong:rgba(44,44,52,.78);--g-brd:rgba(255,255,255,.16);--g-hi:rgba(255,255,255,.28);
+ --g-shadow:0 10px 30px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.3);
+ --dim:rgba(0,0,0,.35);color-scheme:dark}}
+#phone.priv{
+ --fg:#f5f5f7;--sub:rgba(235,235,245,.62);--blue:#3b9bff;--line:rgba(255,255,255,.12);
+ --wall:radial-gradient(120% 70% at 20% 10%,#2c2a4a 0,rgba(44,42,74,0) 55%),radial-gradient(90% 60% at 85% 60%,#3a2440 0,rgba(58,36,64,0) 55%),#121216;
+ --g-bg:rgba(30,30,36,.5);--g-strong:rgba(40,40,48,.85);--g-brd:rgba(255,255,255,.14);--g-hi:rgba(255,255,255,.22);
+ --g-shadow:0 10px 30px rgba(0,0,0,.55);--dim:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow:hidden;overscroll-behavior:none}
+button,input{font:inherit;color:inherit;border:0;background:none}
+button{cursor:pointer}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.s{width:15px;height:15px}
+
+#stage{height:100%;display:flex;justify-content:center;align-items:center;background:#111}
+#phone{position:relative;width:100%;max-width:430px;height:100%;overflow:hidden;color:var(--fg);background:var(--wall);background-attachment:fixed}
+@media (min-width:600px){#phone{height:min(900px,96vh);border-radius:54px;box-shadow:0 0 0 10px #1c1c1e,0 0 0 11px #3a3a3c,0 40px 90px rgba(0,0,0,.6)}}
+
+/* ---------- Liquid Glass ---------- */
+.glass{position:relative;isolation:isolate;background:var(--g-bg);-webkit-backdrop-filter:blur(16px) saturate(190%) brightness(1.04);backdrop-filter:blur(16px) saturate(190%) brightness(1.04);border:1px solid var(--g-brd);box-shadow:inset 0 1px 1px var(--g-hi),inset 0 -1px 1px rgba(255,255,255,.06),inset 0 0 18px rgba(255,255,255,.08),var(--g-shadow)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;background:linear-gradient(140deg,rgba(255,255,255,.38) 0%,rgba(255,255,255,.06) 32%,rgba(255,255,255,0) 55%,rgba(255,255,255,.10) 100%)}
+.glass::after{content:"";position:absolute;left:14%;right:14%;top:0;height:1px;border-radius:1px;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));opacity:.7}
+html.refract .glass{-webkit-backdrop-filter:url(#lg) blur(14px) saturate(190%);backdrop-filter:url(#lg) blur(14px) saturate(190%)}
+.press{transition:transform .45s cubic-bezier(.3,1.6,.5,1),background .2s,box-shadow .2s}
+.press:active{transform:scale(.9);background:var(--g-strong)}
+
+/* ---------- Pages ---------- */
+#pages{position:absolute;inset:0}
+.frame{position:absolute;left:0;right:0;top:0;bottom:0;width:100%;height:100%;border:0;background:#fff;padding-top:env(safe-area-inset-top)}
+.frame[hidden],#start[hidden],#blocked[hidden]{display:none}
+#start,#blocked{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 56px) 20px 140px}
+@media (min-width:600px){#start,#blocked{padding-top:72px}}
+.hello{font-size:34px;font-weight:700;letter-spacing:-.02em;margin-bottom:22px}
+.sec{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:26px 2px 12px}
+.favs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 10px}
+.fav{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+.tile{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:24px;font-weight:700;color:var(--fg);overflow:hidden}
+.tile img{width:34px;height:34px;border-radius:8px}
+.lt{display:inline-grid;place-items:center;font-weight:700;color:var(--fg)}
+.tile .lt{font-size:26px}
+b.lt.fi{width:20px;height:20px;font-size:13px}
+.fl{font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list{border-radius:22px;overflow:hidden}
+.row{width:100%;display:flex;align-items:center;gap:12px;padding:13px 16px;text-align:left;min-width:0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row:active{background:rgba(127,127,127,.12)}
+.row .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
+.row .tx small{display:block;font-size:12.5px;color:var(--sub);margin-top:1px;overflow:hidden;text-overflow:ellipsis}
+.row svg,.row img.fi{color:var(--sub);flex:none}
+.row img.fi{width:20px;height:20px;border-radius:5px}
+.empty{color:var(--sub);font-size:15px;line-height:1.45;padding:4px 2px}
+.privcard{margin-top:8px;padding:22px;border-radius:26px;text-align:center}
+.privcard h3{font-size:21px;margin-bottom:6px}
+.privcard p{color:var(--sub);font-size:15px;line-height:1.45}
+.blk{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:30px 22px;border-radius:30px;margin-top:40px}
+.blk .tile{width:80px;height:80px;border-radius:22px}
+.blk b{font-size:20px;overflow-wrap:anywhere}
+.blk p{color:var(--sub);font-size:14.5px;line-height:1.45}
+.cta{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:24px;background:var(--blue);color:#fff;font-weight:600;font-size:16px;text-decoration:none}
+
+/* ---------- Bottom bar ---------- */
+#bar{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);display:flex;align-items:center;gap:8px;z-index:20;transition:transform .4s cubic-bezier(.3,1.4,.5,1)}
+.gbtn{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--fg);position:relative}
+/* tab count badge — shows inside the button, hides the icon */
+#tabsBtn svg{display:none}
+#tabCount{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;border:2px solid var(--fg);font-size:13px;font-weight:700;color:var(--fg)}
+.gbtn:disabled{opacity:.4}
+#cap{flex:1;min-width:0;height:48px;border-radius:24px;display:flex;align-items:center;overflow:hidden}
+#capLabel{flex:1;min-width:0;height:48px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 4px 0 16px;font-size:16px;font-weight:500}
+#capLabel span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#capLabel.ph{color:var(--sub);font-weight:400}
+#reload{width:42px;height:48px;display:grid;place-items:center;flex:none;color:var(--fg)}
+#urlInput{display:none;flex:1;min-width:0;height:48px;outline:none;font-size:17px;padding:0 6px 0 2px}
+#urlInput::placeholder{color:var(--sub)}
+#sic{display:none;padding-left:16px;color:var(--sub)}
+#clr{display:none;width:40px;height:48px;place-items:center;color:var(--sub)}
+#prog{position:absolute;left:0;bottom:0;height:2.5px;width:0;background:var(--blue);border-radius:2px;opacity:0;transition:width .5s ease,opacity .3s}
+#phone.editing #capLabel,#phone.editing #reload,#phone.editing #back,#phone.editing #tabsBtn,#phone.editing #more{display:none}
+#phone.editing #urlInput,#phone.editing #sic{display:block}
+#phone.editing #clr{display:grid}
+#cancel{display:none}
+#phone.editing #cancel{display:grid}
+
+#scrim{position:absolute;inset:0;z-index:15;background:var(--dim);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);opacity:0;pointer-events:none;transition:opacity .25s}
+#scrim.on{opacity:1;pointer-events:auto}
+#sugg{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 72px);top:calc(env(safe-area-inset-top) + 16px);z-index:16;display:none;flex-direction:column;justify-content:flex-end;overflow:hidden}
+#phone.editing #sugg{display:flex}
+#suggIn{overflow-y:auto;max-height:100%;padding-bottom:4px}
+#suggIn .sec{margin-top:6px}
+
+/* ---------- Menu ---------- */
+#menu{position:absolute;right:12px;bottom:calc(env(safe-area-inset-bottom) + 72px);width:250px;border-radius:26px;z-index:25;padding:6px;transform-origin:bottom right;transform:scale(.6) translateY(20px);opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.3,1.5,.5,1),opacity .2s}
+#menu.on{transform:none;opacity:1;pointer-events:auto}
+#menu .mi{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:18px;font-size:16px;text-align:left}
+#menu .mi:active{background:rgba(127,127,127,.18)}
+#menu .mi:disabled{opacity:.35}
+#menu hr{border:0;height:1px;background:var(--line);margin:4px 10px}
+#menuCatch{position:absolute;inset:0;z-index:24;display:none}
+#menuCatch.on{display:block}
+
+/* ---------- Tab overview ---------- */
+.layer{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;background:var(--wall)}
+.layer[hidden]{display:none}
+.lhead{text-align:center;font-weight:600;font-size:17px;padding:calc(env(safe-area-inset-top) + 18px) 16px 6px}
+@media (min-width:600px){.lhead{padding-top:58px}}
+#grid{flex:1;min-height:0;overflow-y:auto;padding:14px 16px 120px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-content:start}
+.card{position:relative;height:236px;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;animation:pop .35s cubic-bezier(.3,1.4,.5,1) both}
+.card.sel{box-shadow:0 0 0 3px var(--blue),var(--g-shadow)}
+.card .shot{flex:1;min-height:0;margin:6px 6px 0;border-radius:20px;overflow:hidden;position:relative;background:rgba(255,255,255,.55)}
+#phone.priv .card .shot,.dk .card .shot{background:rgba(0,0,0,.25)}
+.shot .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px}
+.shot .mini i{aspect-ratio:1;border-radius:9px;background:rgba(127,127,127,.22)}
+.shot .gq{padding:14px;font-size:14px}
+.shot .gq b{display:block;font-size:16px;line-height:1.25;overflow-wrap:anywhere;margin-bottom:8px}
+.shot .gq i{display:block;height:7px;border-radius:4px;background:rgba(127,127,127,.25);margin-top:7px}
+.shot .big{position:absolute;inset:0;display:grid;place-items:center}
+.shot .big img{width:44px;height:44px;border-radius:11px}
+.card .meta{display:flex;align-items:center;gap:7px;padding:8px 10px 10px 12px}
+.card .meta img,.card .meta .ft{width:16px;height:16px;border-radius:4px;flex:none}
+.card .meta .t{flex:1;min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cx{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;z-index:2;color:var(--fg)}
+.cx svg{width:13px;height:13px;stroke-width:2.6}
+#swBar{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:31}
+.seg{display:flex;padding:4px;border-radius:24px;height:48px;align-items:center}
+.seg button{height:40px;padding:0 16px;border-radius:20px;font-size:15px;font-weight:500;white-space:nowrap;transition:background .25s}
+.seg button.on{background:var(--g-strong);box-shadow:inset 0 1px 1px var(--g-hi),0 2px 8px rgba(0,0,0,.12);font-weight:600}
+.done{color:var(--blue)}
+
+/* ---------- Bookmarks sheet ---------- */
+#bmLayer{background:transparent}
+#bmScrim{position:absolute;inset:0;background:var(--dim);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#bmSheet{position:absolute;left:8px;right:8px;bottom:8px;top:calc(env(safe-area-inset-top) + 40px);border-radius:34px;display:flex;flex-direction:column;overflow:hidden;animation:up .4s cubic-bezier(.3,1.2,.5,1)}
+#bmSheet.glass{background:var(--g-strong)}
+.bmh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 14px 8px}
+.bmb{flex:1;min-height:0;overflow-y:auto;padding:6px 14px 24px}
+.lnk{color:var(--blue);font-size:16px;padding:12px 4px}
+.rm{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--sub);flex:none;margin-right:10px}
+
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-20px);z-index:60;padding:11px 18px;border-radius:22px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .25s,transform .45s cubic-bezier(.3,1.5,.5,1);max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (min-width:600px){#toast{top:56px}}
+
+#sb{display:none;position:absolute;top:0;left:0;right:0;height:50px;z-index:40;justify-content:space-between;align-items:center;padding:6px 38px 0;font-weight:600;font-size:16px;pointer-events:none;color:var(--fg)}
+@media (min-width:600px){#sb{display:flex}}
+
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+@keyframes up{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+</style>
 </head>
+<body>
 
-<body
-  class="bg-[#fbfbfa] dark:bg-[#0a0a0e] text-[#121215] dark:text-[#ececf0] min-h-screen overflow-x-hidden selection:bg-brand-500 selection:text-white transition-colors duration-300"
->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <filter id="lg" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+   <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="7" result="n"/>
+   <feGaussianBlur in="n" stdDeviation="2" result="nb"/>
+   <feDisplacementMap in="SourceGraphic" in2="nb" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+ </defs>
+ <symbol id="i-back" viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></symbol>
+ <symbol id="i-fwd" viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></symbol>
+ <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M7 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8 4.5 4 4.5v14c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-14c-4 0-6.5.5-8 2zM12 6.5v14"/></symbol>
+ <symbol id="i-tabs" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="3"/><path d="M8 5.5A2.5 2.5 0 0 1 10.5 3h8A2.5 2.5 0 0 1 21 5.5v8a2.5 2.5 0 0 1-2.5 2.5"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+ <symbol id="i-reload" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+ <symbol id="i-xc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+ <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5s-1 5.9-3.5 8.5c-2.5-2.6-3.5-5.4-3.5-8.5s1-5.9 3.5-8.5z"/></symbol>
+ <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+ <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="18.5" cy="12" r="1.3" fill="currentColor"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8L3.5 9.7l5.9-.9z"/></symbol>
+ <symbol id="i-hand" viewBox="0 0 24 24"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V11M16 11V8a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-.5a6.5 6.5 0 0 1-5.4-2.9L4 15a1.5 1.5 0 0 1 2.4-1.8L7 14"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><polyline points="5 12.5 10 17.5 19 7"/></symbol>
+</svg>
 
-  <!-- =========================================
-       READING PROGRESS BAR
-       ========================================= -->
+<div id="stage"><div id="phone">
+ <div id="sb"><span id="clock">9:41</span><span>●●●</span></div>
 
-  <div
-    id="progressBar"
-    class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-brand-600 via-brand-400 to-amber-300 z-50 origin-left scale-x-0 transition-transform duration-75"
-  ></div>
+ <div id="pages">
+  <div id="start"></div>
+  <div id="blocked" hidden></div>
+ </div>
 
-  <!-- =========================================
-       AMBIENT BACKGROUND
-       ========================================= -->
+ <div id="scrim"></div>
+ <div id="sugg"><div id="suggIn"></div></div>
 
-  <div
-    class="fixed inset-0 pointer-events-none overflow-hidden -z-10"
-    aria-hidden="true"
-  >
-
-    <canvas
-      id="ambientCanvas"
-      class="absolute inset-0 w-full h-full opacity-60 dark:opacity-45"
-    ></canvas>
-
-    <div
-      id="orb1"
-      class="aurora-orb w-[540px] h-[540px] top-[-5%] left-[10%] bg-brand-500/35"
-    ></div>
-
-    <div
-      id="orb2"
-      class="aurora-orb w-[620px] h-[620px] top-[30%] right-[-5%] bg-amber-400/25"
-    ></div>
-
-    <div
-      id="orb3"
-      class="aurora-orb w-[480px] h-[480px] bottom-[10%] left-[30%] bg-blue-500/15 dark:bg-amber-600/20"
-    ></div>
-
+ <div id="bar">
+  <button class="gbtn glass press" id="back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
+  <div class="glass" id="cap">
+   <span id="sic"><svg class="i s"><use href="#i-search"/></svg></span>
+   <button id="capLabel" aria-label="Search or enter website"></button>
+   <input id="urlInput" type="text" inputmode="search" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Search or enter URL" aria-label="Address">
+   <button id="clr" aria-label="Clear text"><svg class="i s"><use href="#i-xc"/></svg></button>
+   <button id="reload" aria-label="Reload"><svg class="i s" style="width:18px;height:18px"><use href="#i-reload"/></svg></button>
+   <div id="prog"></div>
   </div>
-
-  <!-- =========================================
-       NAVBAR
-       ========================================= -->
-
-  <header
-    id="navbar"
-    class="sticky top-0 z-40 w-full border-b border-black/[0.06] dark:border-white/[0.08] backdrop-blur-xl bg-white/75 dark:bg-[#0a0a0e]/75 transition-all duration-300"
-  >
-
-    <div
-      class="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between"
-    >
-
-      <!-- Brand -->
-
-      <a
-        href="#"
-        class="group flex items-center gap-3 text-current no-underline"
-      >
-
-        <div
-          class="relative w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 p-[1.5px] shadow-sm shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300"
-        >
-
-          <div
-            class="w-full h-full rounded-[10px] bg-white dark:bg-[#0f0f14] flex items-center justify-center"
-          >
-
-            <svg
-              class="w-5 h-5 text-brand-500 transform group-hover:rotate-12 transition-transform duration-300"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-
-              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-              <path d="M2 17l10 5 10-5"></path>
-              <path d="M2 12l10 5 10-5"></path>
-
-            </svg>
-
-          </div>
-
-        </div>
-
-        <div class="flex flex-col">
-
-          <span
-            class="font-bold text-lg tracking-tight flex items-center gap-1.5"
-          >
-            GazStudios
-
-            <span
-              class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-brand-500/10 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 border border-brand-500/20"
-            >
-              OS
-            </span>
-
-          </span>
-
-        </div>
-
-      </a>
-
-      <!-- Desktop Navigation -->
-
-      <nav
-        class="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600 dark:text-gray-300"
-      >
-
-        <a
-          href="https://jdug83.github.io/ai/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors flex items-center gap-1"
-        >
-          GazChat
-
-          <span
-            class="text-[10px] px-1 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold"
-          >
-            Fast
-          </span>
-        </a>
-
-        <a
-          href="https://jdug83.github.io/GazCode/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
-        >
-          GazCode
-        </a>
-
-        <a
-          href="Gazchristmas.html"
-          class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors flex items-center gap-1"
-        >
-          <span>🎄</span>
-          GazChristmas
-        </a>
-
-        <a
-          href="Models.html"
-          class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
-        >
-          Models
-        </a>
-
-        <a
-          href="#features"
-          class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
-        >
-          Features
-        </a>
-
-      </nav>
-
-      <!-- Action Cluster -->
-
-      <div class="flex items-center gap-2.5 sm:gap-3">
-
-        <!-- Theme Toggle -->
-
-        <button
-          id="themeToggleBtn"
-          type="button"
-          aria-label="Toggle theme"
-          class="p-2.5 rounded-full text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-        >
-
-          <svg
-            id="sunIcon"
-            class="w-5 h-5 hidden dark:block text-brand-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-
-          </svg>
-
-          <svg
-            id="moonIcon"
-            class="w-5 h-5 block dark:hidden text-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-            />
-
-          </svg>
-
-        </button>
-
-        <!-- More Apps -->
-
-        <button
-          id="moreAppsBtn"
-          type="button"
-          class="relative group px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border border-black/10 dark:border-white/15 bg-black/[0.03] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-all flex items-center gap-2 active:scale-95"
-        >
-
-          <span>More Apps</span>
-
-          <svg
-            class="w-3.5 h-3.5 text-gray-500 group-hover:translate-x-0.5 transition-transform"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M9 5l7 7-7 7"
-            />
-
-          </svg>
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </header>
-
-  <!-- =========================================
-       MAIN HERO
-       ========================================= -->
-
-  <main
-    class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-20 overflow-hidden"
-  >
-
-    <div
-      class="max-w-4xl mx-auto text-center flex flex-col items-center"
-    >
-
-      <!-- Status -->
-
-      <div
-        class="reveal-item inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 dark:bg-brand-500/15 backdrop-blur-md mb-8 shadow-sm"
-      >
-
-        <span class="relative flex h-2.5 w-2.5">
-
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"
-          ></span>
-
-          <span
-            class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500"
-          ></span>
-
-        </span>
-
-        <span
-          class="text-xs font-semibold tracking-wide text-brand-700 dark:text-brand-300"
-        >
-          October Update!
-        </span>
-
-        <span
-          class="hidden sm:inline-block w-1 h-1 rounded-full bg-brand-500/40"
-        ></span>
-
-        <span
-          class="hidden sm:inline-block text-[11px] font-mono text-brand-600 dark:text-brand-400"
-        >
-          v3.4 live
-        </span>
-
-      </div>
-
-      <!-- Headline -->
-
-      <h1
-        class="reveal-item font-extrabold text-5xl sm:text-7xl lg:text-8xl tracking-tight leading-[1.05] mb-6"
-      >
-        AI that works
-        <br>
-
-        <span class="shimmer-text">
-          for everyone.
-        </span>
-      </h1>
-
-      <!-- Description -->
-
-      <p
-        class="reveal-item max-w-2xl text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-normal mb-10"
-      >
-        Free AI chat and coding tools that open instantly in your browser. No sign-up, no subscription — just try GazChat Nano and GazCode.
-      </p>
-
-      <!-- Primary Actions -->
-
-      <div
-        class="reveal-item flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto mb-12"
-      >
-
-        <a
-          href="https://jdug83.github.io/ai/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-brand-500 hover:bg-brand-400 text-black font-semibold text-sm sm:text-base shadow-lg shadow-brand-500/25 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2.5 group"
-        >
-
-          <span>
-            Launch GazChat Nano
-          </span>
-
-          <svg
-            class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-
-          </svg>
-
-        </a>
-
-        <a
-          href="https://jdug83.github.io/GazCode/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full sm:w-auto px-7 py-3.5 rounded-full glass-panel hover:bg-black/5 dark:hover:bg-white/10 text-current font-semibold text-sm sm:text-base border border-black/10 dark:border-white/15 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
-        >
-
-          <svg
-            class="w-4 h-4 text-brand-500"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-            />
-
-          </svg>
-
-          <span>
-            Open GazCode 26
-          </span>
-
-        </a>
-
-      </div>
-
-      <!-- Metrics -->
-
-      <div
-        class="reveal-item flex flex-wrap items-center justify-center gap-y-3 gap-x-8 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400"
-      >
-
-        <div class="flex items-center gap-2">
-          <span class="text-emerald-500">●</span>
-          <span>100% Free & Open</span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="text-brand-500">●</span>
-          <span>Runs in your browser</span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="text-cyan-500">●</span>
-          <span>No sign-up needed</span>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- =========================================
-         AI TERMINAL
-         ========================================= -->
-
-    <div class="reveal-item mt-16 max-w-4xl mx-auto">
-
-      <div
-        class="spotlight-card rounded-2xl p-1 glow-border shadow-2xl backdrop-blur-2xl"
-      >
-
-        <div
-          class="rounded-xl bg-white/90 dark:bg-[#0e0e13]/90 p-5 sm:p-7"
-        >
-
-          <!-- Terminal Header -->
-
-          <div
-            class="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] pb-4 mb-5"
-          >
-
-            <div class="flex items-center gap-2">
-
-              <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
-              <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-              <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-
-              <span
-                class="ml-2 font-mono text-xs text-gray-400"
-              >
-                gazchat-nano://runtime
-              </span>
-
-            </div>
-
-            <div class="flex items-center gap-3">
-
-              <span
-                class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-semibold border border-emerald-500/20 flex items-center gap-1"
-              >
-
-                <span
-                  class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
-                ></span>
-
-                PREVIEW
-
-              </span>
-
-              <span
-                class="text-xs text-gray-400 font-mono hidden sm:inline"
-              >
-                sample replies
-              </span>
-
-            </div>
-
-          </div>
-
-          <!-- Presets -->
-
-          <div class="flex flex-wrap gap-2 mb-4">
-
-            <button
-              class="demo-preset-btn px-3 py-1 text-xs rounded-lg font-mono bg-brand-500/10 dark:bg-brand-500/20 text-brand-700 dark:text-brand-300 border border-brand-500/30 transition-all"
-              data-prompt="What makes GazChat Nano ultra fast?"
-            >
-              ⚡ Speed Engine
-            </button>
-
-            <button
-              class="demo-preset-btn px-3 py-1 text-xs rounded-lg font-mono bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 border border-transparent transition-all"
-              data-prompt="Build a clean JavaScript debounce function in 3 lines."
-            >
-              💻 JS Snippet
-            </button>
-
-            <button
-              class="demo-preset-btn px-3 py-1 text-xs rounded-lg font-mono bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 border border-transparent transition-all"
-              data-prompt="Write a 2-sentence pitch for a cyber-punk game."
-            >
-              🎮 Creative Pitch
-            </button>
-
-          </div>
-
-          <!-- Terminal Output -->
-
-          <div
-            id="aiTerminalOutput"
-            class="min-h-[140px] max-h-[220px] overflow-y-auto p-4 rounded-xl font-mono text-xs sm:text-sm bg-[#f5f5f4] dark:bg-[#07070a] border border-black/5 dark:border-white/5 text-gray-800 dark:text-gray-200 leading-relaxed mb-4"
-          >
-
-            <span
-              class="text-brand-600 dark:text-brand-400 font-bold"
-            >
-              $ GazNano:
-            </span>
-
-            <span
-              id="typedAIResponse"
-              class="typing-cursor"
-            >
-              This is a quick preview with sample replies. Try a preset above, then open GazChat Nano for real answers.
-            </span>
-
-          </div>
-
-          <!-- Input -->
-
-          <form
-            id="aiInteractiveForm"
-            class="relative flex items-center gap-2"
-          >
-
-            <div class="relative flex-1">
-
-              <span
-                class="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono text-xs text-brand-500 select-none"
-              >
-                &gt;
-              </span>
-
-              <input
-                id="interactiveInput"
-                type="text"
-                placeholder="Ask GazChat anything or try a prompt..."
-                class="w-full pl-8 pr-4 py-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 focus:border-brand-500 focus:outline-none text-xs sm:text-sm font-sans transition-colors placeholder:text-gray-400"
-              >
-
-            </div>
-
-            <button
-              type="submit"
-              class="px-5 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-black font-semibold text-xs sm:text-sm transition-all active:scale-95 flex items-center gap-1.5 shadow-md shadow-brand-500/20"
-            >
-
-              <span>
-                Execute
-              </span>
-
-              <svg
-                class="w-3.5 h-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-
-              </svg>
-
-            </button>
-
-          </form>
-
-          <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-            Preview only —
-            <a href="https://jdug83.github.io/ai/" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 dark:text-brand-400 hover:underline">open GazChat Nano</a>
-            to ask anything for real.
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </main>
-
-  <!-- =========================================
-       FEATURES
-       ========================================= -->
-
-  <section
-    id="features"
-    class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 py-20 border-t border-black/[0.06] dark:border-white/[0.06]"
-  >
-
-    <div class="max-w-2xl mx-auto text-center mb-16">
-
-      <div
-        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold mb-3"
-      >
-        CORE ECOSYSTEM
-      </div>
-
-      <h2
-        class="text-3xl sm:text-5xl font-extrabold tracking-tight"
-      >
-        Simple. Powerful. Fluid.
-      </h2>
-
-      <p
-        class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg"
-      >
-        Everything you need to create, experiment, and build with artificial intelligence without bloat.
-      </p>
-
-    </div>
-
-    <!-- Cards -->
-
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-6"
-    >
-
-      <!-- GazChat -->
-
-      <div
-        class="spotlight-card tilt-card p-8 rounded-2xl flex flex-col justify-between group"
-      >
-
-        <div>
-
-          <div
-            class="w-12 h-12 rounded-xl bg-amber-500/10 dark:bg-amber-400/10 text-brand-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
-          >
-
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-
-            </svg>
-
-          </div>
-
-          <h3
-            class="text-xl sm:text-2xl font-bold mb-3 tracking-tight group-hover:text-brand-500 transition-colors"
-          >
-            GazChat Nano
-          </h3>
-
-          <p
-            class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed mb-6"
-          >
-            A lightweight AI chat that starts instantly. Ask questions, brainstorm ideas and get help with writing and code.
-          </p>
-
-        </div>
-
-        <div
-          class="pt-4 border-t border-black/[0.05] dark:border-white/[0.05] flex items-center justify-between"
-        >
-
-          <a
-            href="https://jdug83.github.io/ai/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="card-link inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 group-hover:gap-2.5 transition-all"
-          >
-            Open GazChat
-            <span>→</span>
-          </a>
-
-          <span
-            class="text-xs font-mono text-gray-400"
-          >
-            No sign-up
-          </span>
-
-        </div>
-
-      </div>
-
-      <!-- Models -->
-
-      <div
-        class="spotlight-card tilt-card p-8 rounded-2xl flex flex-col justify-between group"
-      >
-
-        <div>
-
-          <div
-            class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 dark:text-blue-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
-          >
-
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              />
-
-            </svg>
-
-          </div>
-
-          <h3
-            class="text-xl sm:text-2xl font-bold mb-3 tracking-tight group-hover:text-brand-500 transition-colors"
-          >
-            AI Models
-          </h3>
-
-          <p
-            class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed mb-6"
-          >
-            See the models behind GazChat, what each one is good at, and compare them side by side.
-          </p>
-
-        </div>
-
-        <div
-          class="pt-4 border-t border-black/[0.05] dark:border-white/[0.05] flex items-center justify-between"
-        >
-
-          <a
-            href="Models.html"
-            class="card-link inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 group-hover:gap-2.5 transition-all"
-          >
-            Explore Models
-            <span>→</span>
-          </a>
-
-          <span
-            class="text-xs font-mono text-gray-400"
-          >
-            Compare &amp; choose
-          </span>
-
-        </div>
-
-      </div>
-
-      <!-- Speed -->
-
-      <div
-        class="spotlight-card p-8 rounded-2xl flex flex-col justify-between group"
-      >
-
-        <div>
-
-          <div
-            class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
-          >
-
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 00-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              />
-
-            </svg>
-
-          </div>
-
-          <h3
-            class="text-xl sm:text-2xl font-bold mb-3 tracking-tight group-hover:text-brand-500 transition-colors"
-          >
-            Built for Speed
-          </h3>
-
-          <p
-            class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed mb-6"
-          >
-            No sign-up, no trackers and nothing to install. Open any GazStudios tool and start straight away.
-          </p>
-
-        </div>
-
-        <div
-          class="pt-4 border-t border-black/[0.05] dark:border-white/[0.05] flex items-center justify-between"
-        >
-
-          <span
-            class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium"
-          >
-            No accounts needed
-          </span>
-
-          <span
-            class="text-xs font-mono text-gray-400"
-          >
-            Privacy-friendly
-          </span>
-
-        </div>
-
-      </div>
-
-      <!-- GazCode -->
-
-      <div
-        class="spotlight-card tilt-card p-8 rounded-2xl flex flex-col justify-between group"
-      >
-
-        <div>
-
-          <div
-            class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
-          >
-
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-
-            </svg>
-
-          </div>
-
-          <h3
-            class="text-xl sm:text-2xl font-bold mb-3 tracking-tight group-hover:text-brand-500 transition-colors"
-          >
-            GazCode Editor 26
-          </h3>
-
-          <p
-            class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed mb-6"
-          >
-            A browser code editor with live preview, syntax highlighting and AI help for writing and fixing code.
-          </p>
-
-        </div>
-
-        <div
-          class="pt-4 border-t border-black/[0.05] dark:border-white/[0.05] flex items-center justify-between"
-        >
-
-          <a
-            href="https://jdug83.github.io/GazCode/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="card-link inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 group-hover:gap-2.5 transition-all"
-          >
-            Launch IDE
-            <span>→</span>
-          </a>
-
-          <span
-            class="text-xs font-mono text-gray-400"
-          >
-            Desktop & Web
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- =========================================
-       FOOTER
-       ========================================= -->
-
-  <footer
-    class="relative z-10 border-t border-black/[0.06] dark:border-white/[0.06] py-12 px-5 sm:px-8 bg-black/[0.02] dark:bg-white/[0.02]"
-  >
-
-    <div
-      class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6"
-    >
-
-      <div class="flex items-center gap-3">
-
-        <div
-          class="w-6 h-6 rounded-md bg-brand-500/20 text-brand-500 flex items-center justify-center font-bold text-xs"
-        >
-          G
-        </div>
-
-        <span class="text-xs sm:text-sm text-gray-500">
-          © <span id="year">2026</span> GazStudios. Crafting lightweight AI for all.
-        </span>
-
-      </div>
-
-      <div
-        class="flex items-center gap-6 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400"
-      >
-
-        <a
-          href="Leaks.html"
-          class="hover:text-brand-500 transition-colors flex items-center gap-1.5"
-        >
-
-          <span
-            class="w-1.5 h-1.5 rounded-full bg-brand-500"
-          ></span>
-
-          <span>
-            Upcoming Roadmap & Leaks
-          </span>
-
-        </a>
-
-        <a
-          href="https://jdug83.github.io/GazInvaders1/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-brand-500 transition-colors"
-        >
-          Gaz Invaders
-        </a>
-
-      </div>
-
-    </div>
-
-  </footer>
-
-  <!-- =========================================
-       MOBILE BOTTOM NAVIGATION
-       MOBILE ONLY
-
-       Order:
-       Home | GazChat | 🎄 GazChristmas | GazCode | More
-       (Gaz Invaders lives in the "More" menu)
-       ========================================= -->
-
-  <nav
-    class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-[60] h-[72px] px-2 pb-[env(safe-area-inset-bottom)] bg-white/90 dark:bg-[#0d0d12]/90 backdrop-blur-2xl border-t border-black/[0.08] dark:border-white/[0.10] shadow-[0_-10px_35px_rgba(0,0,0,0.12)]"
-    aria-label="Mobile app navigation"
-  >
-
-    <div
-      class="w-full max-w-md mx-auto h-full grid grid-cols-5 items-center"
-    >
-
-      <!-- HOME -->
-
-      <a
-        href="#"
-        class="mobile-nav-item flex flex-col items-center justify-center gap-1 h-full text-brand-500"
-      >
-
-        <div
-          class="w-9 h-9 rounded-xl bg-brand-500/15 flex items-center justify-center"
-        >
-
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 10.5L12 3l9 7.5M5.5 9v10.5h13V9M9.5 19.5v-6h5v6"
-            />
-
-          </svg>
-
-        </div>
-
-        <span class="text-[10px] font-semibold">
-          Home
-        </span>
-
-      </a>
-
-      <!-- GAZCHAT -->
-
-      <a
-        href="https://jdug83.github.io/ai/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mobile-nav-item flex flex-col items-center justify-center gap-1 h-full text-gray-500 dark:text-gray-400 hover:text-brand-500"
-      >
-
-        <div
-          class="w-9 h-9 rounded-xl flex items-center justify-center"
-        >
-
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"
-            />
-
-          </svg>
-
-        </div>
-
-        <span class="text-[10px] font-semibold">
-          GazChat
-        </span>
-
-      </a>
-
-      <!-- =====================================
-           GAZCHRISTMAS — EXACT CENTER
-           ===================================== -->
-
-      <a
-        href="Gazchristmas.html"
-        class="mobile-nav-item mobile-christmas-item flex flex-col items-center justify-center gap-1 h-full text-gray-500 dark:text-gray-400 hover:text-brand-500"
-      >
-
-        <div
-          class="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
-        >
-          🎄
-        </div>
-
-        <span
-          class="text-[10px] font-semibold whitespace-nowrap"
-        >
-          Christmas
-        </span>
-
-      </a>
-
-      <!-- GAZCODE -->
-
-      <a
-        href="https://jdug83.github.io/GazCode/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mobile-nav-item flex flex-col items-center justify-center gap-1 h-full text-gray-500 dark:text-gray-400 hover:text-brand-500"
-      >
-
-        <div
-          class="w-9 h-9 rounded-xl flex items-center justify-center"
-        >
-
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-
-          </svg>
-
-        </div>
-
-        <span class="text-[10px] font-semibold">
-          GazCode
-        </span>
-
-      </a>
-
-      <!-- MORE -->
-
-      <button
-        id="mobileMoreAppsBtn"
-        type="button"
-        class="mobile-nav-item flex flex-col items-center justify-center gap-1 h-full text-gray-500 dark:text-gray-400 hover:text-brand-500"
-      >
-
-        <div
-          class="w-9 h-9 rounded-xl flex items-center justify-center"
-        >
-
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <circle
-              cx="5"
-              cy="12"
-              r="1.5"
-              fill="currentColor"
-            />
-
-            <circle
-              cx="12"
-              cy="12"
-              r="1.5"
-              fill="currentColor"
-            />
-
-            <circle
-              cx="19"
-              cy="12"
-              r="1.5"
-              fill="currentColor"
-            />
-
-          </svg>
-
-        </div>
-
-        <span class="text-[10px] font-semibold">
-          More
-        </span>
-
-      </button>
-
-    </div>
-
-  </nav>
-
-  <!-- =========================================
-       MORE APPS MODAL
-       ========================================= -->
-
-  <div
-    id="moreAppsModal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="moreAppsTitle"
-    aria-hidden="true"
-    class="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300"
-  >
-
-    <div
-      class="modal-content relative w-full max-w-2xl rounded-3xl glass-panel bg-white/95 dark:bg-[#121217]/95 p-6 sm:p-8 shadow-2xl border border-black/10 dark:border-white/10 transform scale-95 transition-all duration-300"
-    >
-
-      <!-- Close -->
-
-      <button
-        id="closeAppsModalBtn"
-        type="button"
-        aria-label="Close"
-        class="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-      >
-
-        <svg
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-
-        </svg>
-
-      </button>
-
-      <div class="mb-6">
-
-        <div
-          class="inline-block px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold mb-2"
-        >
-          ECOSYSTEM DIRECTORY
-        </div>
-
-        <h2
-          id="moreAppsTitle"
-          class="text-2xl sm:text-3xl font-bold tracking-tight"
-        >
-          GazStudios Applications
-        </h2>
-
-        <p
-          class="text-sm text-gray-500 dark:text-gray-400 mt-1"
-        >
-          Explore specialized standalone tools, arcade games, and experimental previews.
-        </p>
-
-      </div>
-
-      <!-- App Grid -->
-
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-6 max-h-[50vh] overflow-y-auto pr-1"
-      >
-
-        <!-- Gaz Invaders -->
-
-        <a
-          href="https://jdug83.github.io/GazInvaders1/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            👾
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              Gaz Invaders
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-rose-500/15 text-rose-500"
-              >
-                Playable
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              Classic retro arcade shooter reimagined with neon vectors and boss rounds.
-            </p>
-
-          </div>
-
-        </a>
-
-        <!-- GazCode -->
-
-        <a
-          href="https://jdug83.github.io/GazCode/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            💻
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              GazCode Studio
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-purple-500/15 text-purple-500"
-              >
-                IDE
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              Live reactive web editor with real-time compilation and AI code assist.
-            </p>
-
-          </div>
-
-        </a>
-
-        <!-- GazChristmas -->
-
-        <a
-          href="Gazchristmas.html"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            🎄
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              GazChristmas
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-emerald-500/15 text-emerald-500"
-              >
-                Seasonal
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              Festive holiday experience, seasonal easter eggs, and custom themes.
-            </p>
-
-          </div>
-
-        </a>
-
-        <!-- GazChat -->
-
-        <a
-          href="https://jdug83.github.io/ai/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-brand-500/15 text-brand-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            ✦
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              GazChat Web
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-brand-500/15 text-brand-500"
-              >
-                AI
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              High-velocity generative dialogue engine with immediate prompt turnaround.
-            </p>
-
-          </div>
-
-        </a>
-
-        <!-- Models -->
-
-        <a
-          href="Models.html"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            ◈
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              AI Models
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-blue-500/15 text-blue-500"
-              >
-                Compare
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              See the models behind GazChat and compare them side by side.
-            </p>
-
-          </div>
-
-        </a>
-
-        <!-- Roadmap -->
-
-        <a
-          href="Leaks.html"
-          class="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] hover:bg-brand-500/10 border border-black/[0.06] dark:border-white/[0.06] hover:border-brand-500/30 transition-all group flex items-start gap-3.5"
-        >
-
-          <div
-            class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-lg font-bold shrink-0"
-          >
-            ➜
-          </div>
-
-          <div>
-
-            <h4
-              class="font-bold text-sm group-hover:text-brand-500 transition-colors flex items-center gap-1.5"
-            >
-              Roadmap &amp; Leaks
-
-              <span
-                class="text-[10px] font-mono px-1 py-0.2 rounded bg-amber-500/15 text-amber-500"
-              >
-                Preview
-              </span>
-
-            </h4>
-
-            <p
-              class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
-            >
-              What's coming next to GazStudios.
-            </p>
-
-          </div>
-
-        </a>
-
-      </div>
-
-      <!-- Modal Footer -->
-
-      <div
-        class="flex justify-end pt-3 border-t border-black/[0.06] dark:border-white/[0.06]"
-      >
-
-        <button
-          id="closeAppsBtnSecondary"
-          type="button"
-          class="px-5 py-2 rounded-xl text-xs font-semibold bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
-        >
-          Close Overview
-        </button>
-
-      </div>
-
-    </div>
-
+  <button class="gbtn glass press" id="tabsBtn" aria-label="Show all tabs"><svg class="i"><use href="#i-tabs"/></svg><span id="tabCount"></span></button>
+  <button class="gbtn glass press" id="more" aria-label="More"><svg class="i"><use href="#i-more"/></svg></button>
+  <button class="gbtn glass press" id="cancel" aria-label="Cancel"><svg class="i"><use href="#i-x"/></svg></button>
+ </div>
+
+ <div id="menuCatch"></div>
+ <div class="glass" id="menu" role="menu">
+  <button class="mi" data-m="fwd">Forward<svg class="i"><use href="#i-fwd"/></svg></button>
+  <button class="mi" data-m="reload">Reload<svg class="i"><use href="#i-reload"/></svg></button>
+  <button class="mi" data-m="share">Share<svg class="i"><use href="#i-share"/></svg></button>
+  <button class="mi" data-m="open">Open in Browser<svg class="i"><use href="#i-out"/></svg></button>
+  <hr>
+  <button class="mi" data-m="mark">Add Bookmark<svg class="i"><use href="#i-star"/></svg></button>
+  <button class="mi" data-m="bm">Bookmarks &amp; History<svg class="i"><use href="#i-book"/></svg></button>
+  <hr>
+  <button class="mi" data-m="new">New Tab<svg class="i"><use href="#i-plus"/></svg></button>
+  <button class="mi" data-m="newp">New Private Tab<svg class="i"><use href="#i-hand"/></svg></button>
+ </div>
+
+ <section class="layer" id="switcher" hidden>
+  <div class="lhead" id="shead"></div>
+  <div id="grid"></div>
+  <div id="swBar">
+   <button class="gbtn glass press" id="newTab" aria-label="New tab"><svg class="i"><use href="#i-plus"/></svg></button>
+   <div class="seg glass"><button id="segP">Private</button><button id="segN">Tabs</button></div>
+   <button class="gbtn glass press done" id="swDone" aria-label="Done"><svg class="i"><use href="#i-check"/></svg></button>
   </div>
-
-  <!-- =========================================
-       JAVASCRIPT
-       ========================================= -->
-
-  <script>
-    (function () {
-
-      /* =========================================
-         THEME MANAGEMENT
-         ========================================= */
-
-      const themeToggleBtn =
-        document.getElementById('themeToggleBtn');
-
-      const htmlEl =
-        document.documentElement;
-
-      // The theme was already applied in <head>; this just handles the toggle.
-      // Storage is wrapped in try/catch: if the browser blocks it, the page still works.
-      if (themeToggleBtn) {
-
-        themeToggleBtn.addEventListener(
-          'click',
-          () => {
-
-            const isDark =
-              htmlEl.classList.toggle('dark');
-
-            try {
-              localStorage.setItem('gaz_theme', isDark ? 'dark' : 'light');
-            } catch (e) {}
-
-          }
-        );
-
-      }
-
-      /* Footer year stays current */
-      const yearEl = document.getElementById('year');
-      if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-      /* =========================================
-         SCROLL PROGRESS
-         ========================================= */
-
-      const progressBar =
-        document.getElementById('progressBar');
-
-      window.addEventListener(
-        'scroll',
-        () => {
-
-          const winScroll =
-            document.documentElement.scrollTop;
-
-          const height =
-            document.documentElement.scrollHeight -
-            document.documentElement.clientHeight;
-
-          const scrolled =
-            height > 0
-              ? winScroll / height
-              : 0;
-
-          progressBar.style.transform =
-            `scaleX(${scrolled})`;
-
-        },
-        { passive: true }
-      );
-
-      /* =========================================
-         BACKGROUND PARTICLES
-         ========================================= */
-
-      const canvas =
-        document.getElementById('ambientCanvas');
-
-      const ctx =
-        canvas.getContext('2d');
-
-      let particles = [];
-
-      let width = 0;
-      let height = 0;
-
-      function resizeCanvas() {
-
-        width =
-          canvas.width =
-          window.innerWidth;
-
-        height =
-          canvas.height =
-          window.innerHeight;
-
-      }
-
-      window.addEventListener(
-        'resize',
-        resizeCanvas
-      );
-
-      resizeCanvas();
-
-      class Particle {
-
-        constructor() {
-          this.reset();
-        }
-
-        reset() {
-
-          this.x =
-            Math.random() * width;
-
-          this.y =
-            Math.random() * height;
-
-          this.size =
-            Math.random() * 2 + 0.5;
-
-          this.vx =
-            (Math.random() - 0.5) * 0.4;
-
-          this.vy =
-            (Math.random() - 0.5) * 0.4;
-
-          this.alpha =
-            Math.random() * 0.5 + 0.1;
-
-        }
-
-        update() {
-
-          this.x += this.vx;
-          this.y += this.vy;
-
-          if (
-            this.x < 0 ||
-            this.x > width ||
-            this.y < 0 ||
-            this.y > height
-          ) {
-
-            this.reset();
-
-          }
-
-        }
-
-        draw() {
-
-          ctx.beginPath();
-
-          ctx.arc(
-            this.x,
-            this.y,
-            this.size,
-            0,
-            Math.PI * 2
-          );
-
-          ctx.fillStyle =
-            htmlEl.classList.contains('dark')
-              ? `rgba(229, 169, 60, ${this.alpha})`
-              : `rgba(180, 120, 20, ${this.alpha * 0.6})`;
-
-          ctx.fill();
-
-        }
-
-      }
-
-      for (let i = 0; i < 45; i++) {
-        particles.push(new Particle());
-      }
-
-      const reduceMotion =
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      function animateParticles() {
-
-        // Stop drawing when the tab is hidden or the user prefers less motion (saves battery)
-        if (document.hidden || reduceMotion) {
-          setTimeout(() => requestAnimationFrame(animateParticles), 500);
-          return;
-        }
-
-        ctx.clearRect(
-          0,
-          0,
-          width,
-          height
-        );
-
-        particles.forEach(p => {
-
-          p.update();
-          p.draw();
-
-        });
-
-        requestAnimationFrame(
-          animateParticles
-        );
-
-      }
-
-      animateParticles();
-
-      /* =========================================
-         MOUSE PARALLAX
-         ========================================= */
-
-      const orb1 =
-        document.getElementById('orb1');
-
-      const orb2 =
-        document.getElementById('orb2');
-
-      const orb3 =
-        document.getElementById('orb3');
-
-      window.addEventListener(
-        'mousemove',
-        (e) => {
-
-          const nx =
-            (e.clientX / window.innerWidth) - 0.5;
-
-          const ny =
-            (e.clientY / window.innerHeight) - 0.5;
-
-          if (orb1) {
-
-            orb1.style.transform =
-              `translate(${nx * 40}px, ${ny * 40}px)`;
-
-          }
-
-          if (orb2) {
-
-            orb2.style.transform =
-              `translate(${-nx * 50}px, ${-ny * 50}px)`;
-
-          }
-
-          if (orb3) {
-
-            orb3.style.transform =
-              `translate(${nx * 30}px, ${-ny * 30}px)`;
-
-          }
-
-        },
-        { passive: true }
-      );
-
-      /* =========================================
-         REVEAL ON SCROLL
-         ========================================= */
-
-      const revealItems =
-        document.querySelectorAll('.reveal-item');
-
-      // Old browsers without IntersectionObserver: just show everything
-      if (!('IntersectionObserver' in window)) {
-        revealItems.forEach(item => item.classList.add('visible'));
-      }
-
-      const revealObserver = !('IntersectionObserver' in window) ? null :
-        new IntersectionObserver(
-          (entries) => {
-
-            entries.forEach(entry => {
-
-              if (entry.isIntersecting) {
-
-                entry.target.classList.add(
-                  'visible'
-                );
-
-                revealObserver.unobserve(
-                  entry.target
-                );
-
-              }
-
-            });
-
-          },
-          {
-            threshold: 0.1
-          }
-        );
-
-      revealItems.forEach(
-        (item, index) => {
-
-          // Small stagger, capped so items further down don't wait seconds to appear
-          item.style.transitionDelay =
-            `${Math.min(index, 4) * 80}ms`;
-
-          if (revealObserver) revealObserver.observe(item);
-
-        }
-      );
-
-      /* =========================================
-         3D TILT CARDS
-         ========================================= */
-
-      const cards =
-        document.querySelectorAll(
-          '.spotlight-card'
-        );
-
-      cards.forEach(card => {
-
-        card.addEventListener(
-          'mousemove',
-          (e) => {
-
-            const rect =
-              card.getBoundingClientRect();
-
-            const x =
-              e.clientX - rect.left;
-
-            const y =
-              e.clientY - rect.top;
-
-            const px =
-              x / rect.width;
-
-            const py =
-              y / rect.height;
-
-            card.style.setProperty(
-              '--gx',
-              `${px * 100}%`
-            );
-
-            card.style.setProperty(
-              '--gy',
-              `${py * 100}%`
-            );
-
-            if (
-              card.classList.contains(
-                'tilt-card'
-              )
-            ) {
-
-              const rotX =
-                -(py - 0.5) * 10;
-
-              const rotY =
-                (px - 0.5) * 10;
-
-              card.style.transform =
-                `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
-
-            }
-
-          }
-        );
-
-        card.addEventListener(
-          'mouseleave',
-          () => {
-
-            if (
-              card.classList.contains(
-                'tilt-card'
-              )
-            ) {
-
-              card.style.transform = '';
-
-            }
-
-          }
-        );
-
-      });
-
-      /* =========================================
-         AI PLAYGROUND
-         ========================================= */
-
-      const typedOutput =
-        document.getElementById(
-          'typedAIResponse'
-        );
-
-      const interactiveForm =
-        document.getElementById(
-          'aiInteractiveForm'
-        );
-
-      const interactiveInput =
-        document.getElementById(
-          'interactiveInput'
-        );
-
-      const presetBtns =
-        document.querySelectorAll(
-          '.demo-preset-btn'
-        );
-
-      const mockResponses = {
-
-        speed:
-          "GazChat Nano opens straight in your browser — no account, no login screen and no trackers — so you can start typing right away.",
-
-        js:
-          "const debounce = (fn, ms = 300) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; };",
-
-        pitch:
-          "In 2099 Neo-London, memories are currency and your synth-brain is hacked. Rewire reality before the memory debt collectors log your wipe command.",
-
-        default:
-          "This preview only knows a few sample answers. Open GazChat Nano (the gold button above) to ask anything for real."
-
-      };
-
-      let typingInterval = null;
-
-      function typeText(text) {
-
-        clearInterval(
-          typingInterval
-        );
-
-        typedOutput.textContent = '';
-
-        typedOutput.classList.add(
-          'typing-cursor'
-        );
-
-        let i = 0;
-
-        typingInterval =
-          setInterval(
-            () => {
-
-              if (i < text.length) {
-
-                typedOutput.textContent +=
-                  text.charAt(i);
-
-                i++;
-
-              } else {
-
-                clearInterval(
-                  typingInterval
-                );
-
-                typedOutput.classList.remove(
-                  'typing-cursor'
-                );
-
-              }
-
-            },
-            14
-          );
-
-      }
-
-      presetBtns.forEach(btn => {
-
-        btn.addEventListener(
-          'click',
-          () => {
-
-            const prompt =
-              btn.getAttribute(
-                'data-prompt'
-              );
-
-            interactiveInput.value =
-              prompt;
-
-            triggerSimulatedAI(
-              prompt
-            );
-
-          }
-        );
-
-      });
-
-      interactiveForm.addEventListener(
-        'submit',
-        (e) => {
-
-          e.preventDefault();
-
-          const prompt =
-            interactiveInput.value.trim();
-
-          if (!prompt) {
-            return;
-          }
-
-          triggerSimulatedAI(
-            prompt
-          );
-
-        }
-      );
-
-      function triggerSimulatedAI(prompt) {
-
-        const lower =
-          prompt.toLowerCase();
-
-        let reply =
-          mockResponses.default;
-
-        if (
-          lower.includes('speed') ||
-          lower.includes('fast')
-        ) {
-
-          reply =
-            mockResponses.speed;
-
-        } else if (
-          lower.includes('javascript') ||
-          lower.includes('debounce') ||
-          lower.includes('code')
-        ) {
-
-          reply =
-            mockResponses.js;
-
-        } else if (
-          lower.includes('pitch') ||
-          lower.includes('creative') ||
-          lower.includes('game')
-        ) {
-
-          reply =
-            mockResponses.pitch;
-
-        }
-
-        typeText(reply);
-
-      }
-
-      /* =========================================
-         MORE APPS MODAL
-         ========================================= */
-
-      const moreAppsModal =
-        document.getElementById(
-          'moreAppsModal'
-        );
-
-      const moreAppsBtn =
-        document.getElementById(
-          'moreAppsBtn'
-        );
-
-      const mobileMoreAppsBtn =
-        document.getElementById(
-          'mobileMoreAppsBtn'
-        );
-
-      let lastFocused = null;
-
-      function openModal(modal) {
-
-        if (!modal) {
-          return;
-        }
-
-        modal.classList.remove(
-          'pointer-events-none'
-        );
-
-        modal.classList.add(
-          'opacity-100'
-        );
-
-        const content =
-          modal.querySelector(
-            '.modal-content'
-          );
-
-        if (content) {
-
-          content.classList.remove(
-            'scale-95'
-          );
-
-          content.classList.add(
-            'scale-100'
-          );
-
-        }
-
-        document.body.style.overflow =
-          'hidden';
-
-        modal.setAttribute('aria-hidden', 'false');
-        lastFocused = document.activeElement;
-        const closeBtn = document.getElementById('closeAppsModalBtn');
-        if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
-
-      }
-
-      function closeModal(modal) {
-
-        if (!modal) {
-          return;
-        }
-
-        modal.classList.add(
-          'pointer-events-none'
-        );
-
-        modal.classList.remove(
-          'opacity-100'
-        );
-
-        const content =
-          modal.querySelector(
-            '.modal-content'
-          );
-
-        if (content) {
-
-          content.classList.remove(
-            'scale-100'
-          );
-
-          content.classList.add(
-            'scale-95'
-          );
-
-        }
-
-        document.body.style.overflow =
-          '';
-
-        modal.setAttribute('aria-hidden', 'true');
-        if (lastFocused && lastFocused.focus) lastFocused.focus();
-
-      }
-
-      function isModalOpen() {
-        return moreAppsModal && !moreAppsModal.classList.contains('pointer-events-none');
-      }
-
-      /* Desktop More Apps */
-
-      if (moreAppsBtn) {
-
-        moreAppsBtn.addEventListener(
-          'click',
-          () => {
-
-            openModal(
-              moreAppsModal
-            );
-
-          }
-        );
-
-      }
-
-      /* Mobile More Apps */
-
-      if (mobileMoreAppsBtn) {
-
-        mobileMoreAppsBtn.addEventListener(
-          'click',
-          () => {
-
-            openModal(
-              moreAppsModal
-            );
-
-          }
-        );
-
-      }
-
-      /* Close buttons */
-
-      const closeAppsModalBtn =
-        document.getElementById(
-          'closeAppsModalBtn'
-        );
-
-      if (closeAppsModalBtn) {
-
-        closeAppsModalBtn.addEventListener(
-          'click',
-          () => {
-
-            closeModal(
-              moreAppsModal
-            );
-
-          }
-        );
-
-      }
-
-      const closeAppsBtnSecondary =
-        document.getElementById(
-          'closeAppsBtnSecondary'
-        );
-
-      if (closeAppsBtnSecondary) {
-
-        closeAppsBtnSecondary.addEventListener(
-          'click',
-          () => {
-
-            closeModal(
-              moreAppsModal
-            );
-
-          }
-        );
-
-      }
-
-      /* Backdrop close */
-
-      if (moreAppsModal) {
-
-        moreAppsModal.addEventListener(
-          'click',
-          (e) => {
-
-            if (
-              e.target ===
-              moreAppsModal
-            ) {
-
-              closeModal(
-                moreAppsModal
-              );
-
-            }
-
-          }
-        );
-
-      }
-
-      /* ESC close */
-
-      document.addEventListener(
-        'keydown',
-        (e) => {
-
-          if (e.key === 'Escape' && isModalOpen()) {
-
-            closeModal(
-              moreAppsModal
-            );
-
-          }
-
-          // Keep Tab inside the pop-up while it's open
-          if (e.key === 'Tab' && isModalOpen()) {
-            const focusables = moreAppsModal.querySelectorAll('a[href], button:not([disabled])');
-            if (!focusables.length) return;
-            const first = focusables[0], last = focusables[focusables.length - 1];
-            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-          }
-
-        }
-      );
-
-    })();
-  </script>
-
-  <!-- =========================================
-       MOBILE IN-SITE APP VIEWER
-       Apps open inside the site on phones,
-       with the bottom dock always visible.
-       ========================================= -->
-
-  <style>
-    .gz-viewer {
-      position: fixed;
-      left: 0; right: 0; top: 0;
-      bottom: calc(72px + env(safe-area-inset-bottom));
-      z-index: 55;
-      display: flex;
-      flex-direction: column;
-      background: #fbfbfa;
-      transform: translateY(16px);
-      opacity: 0;
-      visibility: hidden;
-      transition: transform .3s cubic-bezier(.16,1,.3,1), opacity .25s ease, visibility 0s linear .3s;
-    }
-    .dark .gz-viewer { background: #0a0a0e; }
-    .gz-viewer.open {
-      transform: none; opacity: 1; visibility: visible;
-      transition: transform .3s cubic-bezier(.16,1,.3,1), opacity .25s ease;
-    }
-    .gz-viewer-bar {
-      display: flex; align-items: center; gap: 2px;
-      height: calc(52px + env(safe-area-inset-top, 0px));
-      min-height: 52px;
-      flex-shrink: 0;
-      box-sizing: border-box;
-      padding: env(safe-area-inset-top, 0px) 6px 0 14px;
-      background: rgba(255,255,255,.92);
-      border-bottom: 1px solid rgba(0,0,0,.08);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    }
-    .dark .gz-viewer-bar { background: rgba(13,13,18,.92); border-bottom-color: rgba(255,255,255,.1); }
-    .gz-viewer-title {
-      flex: 1; min-width: 0;
-      display: flex; align-items: center; gap: 10px;
-      font-weight: 700; font-size: 15px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .gz-viewer-title .gz-dot {
-      width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
-      display: grid; place-items: center;
-      background: rgba(229,169,60,.15); color: #e5a93c;
-    }
-    .gz-vbtn {
-      width: 44px; height: 44px; border-radius: 999px;
-      display: grid; place-items: center;
-      border: 0; background: transparent; color: #6b7280; cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .gz-vbtn:active { background: rgba(0,0,0,.06); }
-    .dark .gz-vbtn { color: #9ca3af; }
-    .dark .gz-vbtn:active { background: rgba(255,255,255,.08); }
-    .gz-frame-wrap { position: relative; flex: 1; }
-    .gz-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; }
-    .gz-loading {
-      position: absolute; inset: 0; display: grid; place-items: center;
-      background: inherit; color: #9ca3af;
-      font: 12px 'JetBrains Mono', monospace;
-      transition: opacity .2s;
-    }
-    .gz-loading.hide { opacity: 0; pointer-events: none; }
-    .gz-spinner {
-      width: 28px; height: 28px; margin: 0 auto 12px; border-radius: 50%;
-      border: 3px solid rgba(229,169,60,.2); border-top-color: #e5a93c;
-      animation: gzspin .8s linear infinite;
-    }
-    @keyframes gzspin { to { transform: rotate(360deg); } }
-
-    /* Dock highlight follows the open app */
-    .mobile-bottom-nav.gz-app-open a[href="#"] { color: #6b7280 !important; }
-    .dark .mobile-bottom-nav.gz-app-open a[href="#"] { color: #9ca3af !important; }
-    .mobile-bottom-nav.gz-app-open a[href="#"] > div { background: transparent !important; }
-    .mobile-bottom-nav .gz-active { color: #e5a93c !important; }
-    .mobile-bottom-nav .gz-active > div { background: rgba(229,169,60,.15); }
-
-    body.gz-viewer-open { overflow: hidden; }
-    @media (min-width: 768px) { .gz-viewer { display: none !important; } }
-  </style>
-
-  <div class="gz-viewer" id="gzViewer" role="region" aria-label="App viewer" aria-hidden="true">
-    <div class="gz-viewer-bar">
-      <div class="gz-viewer-title">
-        <span class="gz-dot" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-        </span>
-        <span id="gzViewerTitle">App</span>
-      </div>
-      <button type="button" class="gz-vbtn" id="gzReload" aria-label="Reload app">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>
-      </button>
-      <a class="gz-vbtn" id="gzExternal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open in a new tab">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
-      </a>
-      <button type="button" class="gz-vbtn" id="gzClose" aria-label="Close app">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <div class="gz-frame-wrap">
-      <iframe id="gzFrame" title="App" allow="clipboard-read; clipboard-write; fullscreen; gamepad; microphone" allowfullscreen></iframe>
-      <div class="gz-loading" id="gzLoading"><div><div class="gz-spinner"></div>Loading…</div></div>
-    </div>
+ </section>
+
+ <section class="layer" id="bmLayer" hidden>
+  <div id="bmScrim"></div>
+  <div class="glass" id="bmSheet">
+   <div class="bmh">
+    <div class="seg glass"><button id="segB">Bookmarks</button><button id="segH">History</button></div>
+    <button class="gbtn glass press done" id="bmDone" aria-label="Done"><svg class="i"><use href="#i-check"/></svg></button>
+   </div>
+   <div class="bmb" id="bmBody"></div>
   </div>
+ </section>
 
-  <script>
-    (function () {
-      'use strict';
+ <div class="glass" id="toast" role="status"></div>
+</div></div>
 
-      // Which links open inside the site on phones
-      var APPS = [
-        { key: 'chat',   name: 'GazChat Nano',    match: 'jdug83.github.io/ai/',          url: 'https://jdug83.github.io/ai/' },
-        { key: 'code',   name: 'GazCode 26',      match: 'jdug83.github.io/GazCode/',     url: 'https://jdug83.github.io/GazCode/' },
-        { key: 'game',   name: 'Gaz Invaders',    match: 'jdug83.github.io/GazInvaders1/', url: 'https://jdug83.github.io/GazInvaders1/' },
-        { key: 'xmas',   name: 'GazChristmas',    match: 'Gazchristmas.html',             url: 'Gazchristmas.html' },
-        { key: 'models', name: 'Models',          match: 'Models.html',                   url: 'Models.html' },
-        { key: 'leaks',  name: 'Roadmap & Leaks', match: 'Leaks.html',                    url: 'Leaks.html' }
-      ];
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)};
+var ls={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 
-      var mobile  = window.matchMedia('(max-width: 767px)');
-      var viewer  = document.getElementById('gzViewer');
-      var frame   = document.getElementById('gzFrame');
-      var title   = document.getElementById('gzViewerTitle');
-      var extLink = document.getElementById('gzExternal');
-      var loading = document.getElementById('gzLoading');
-      var dock    = document.querySelector('.mobile-bottom-nav');
-      var modal   = document.getElementById('moreAppsModal');
-      var current = null;
+/* SVG backdrop-filter refraction: Chrome/Edge/Android only. Other browsers use plain blur glass. */
+var ua=navigator.userAgent;
+if(window.chrome&&!/CriOS|FxiOS|EdgiOS|iPhone|iPad/.test(ua))document.documentElement.classList.add('refract');
 
-      function appFor(href) {
-        if (!href) return null;
-        for (var i = 0; i < APPS.length; i++) {
-          if (href.indexOf(APPS[i].match) !== -1) return APPS[i];
-        }
-        return null;
-      }
-      function byKey(key) {
-        for (var i = 0; i < APPS.length; i++) if (APPS[i].key === key) return APPS[i];
-        return null;
-      }
+var FAVS=[
+ {n:'Google',u:'https://www.google.com/webhp?igu=1'},
+ {n:'Wikipedia',u:'https://en.m.wikipedia.org/wiki/Main_Page'},
+ {n:'Maps',u:'https://maps.google.com/maps?q=Gloucester&output=embed'},
+ {n:'YouTube',u:'https://www.youtube.com'},
+ {n:'BBC',u:'https://www.bbc.co.uk'},
+ {n:'GitHub',u:'https://github.com'},
+ {n:'Bing',u:'https://www.bing.com'},
+ {n:'Weather',u:'https://www.bbc.co.uk/weather'}
+];
+/* Sites known to refuse being shown inside another page */
+var BLOCK=['github.com','bbc.co.uk','bbc.com','facebook.com','instagram.com','x.com','twitter.com','linkedin.com','amazon.co.uk','amazon.com','reddit.com','netflix.com','apple.com','icloud.com','mail.google.com','accounts.google.com','drive.google.com','docs.google.com','outlook.com','live.com','microsoft.com','tiktok.com','ebay.co.uk','ebay.com','paypal.com','whatsapp.com','spotify.com','bing.com','chatgpt.com','claude.ai','strava.com'];
 
-      function closeMoreApps() {
-        if (!modal || modal.classList.contains('pointer-events-none')) return;
-        modal.classList.add('pointer-events-none');
-        modal.classList.remove('opacity-100');
-        var c = modal.querySelector('.modal-content');
-        if (c) { c.classList.remove('scale-100'); c.classList.add('scale-95'); }
-        document.body.style.overflow = '';
-      }
+var uid=1;
+var S={tabs:[],cur:null,mode:'n',sw:false,editing:false,bmTab:'b'};
+var hist=ls.get('gt_hist',[]);
+var marks=ls.get('gt_marks',[{u:'https://en.m.wikipedia.org/wiki/Main_Page',t:'Wikipedia'}]);
+var frames={};
 
-      function markDock(app) {
-        if (!dock) return;
-        dock.classList.toggle('gz-app-open', !!app);
-        dock.querySelectorAll('a').forEach(function (a) {
-          var match = app && appFor(a.getAttribute('href'));
-          a.classList.toggle('gz-active', !!(match && match.key === app.key));
-        });
-      }
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\.|^m\.|^en\.m\./,'')}catch(e){return u}}
+function fav(u,sz){return 'https://www.google.com/s2/favicons?sz='+(sz||64)+'&domain='+encodeURIComponent(hostOf(u))}
+function gSearch(q){return 'https://www.google.com/search?igu=1&hl=en-GB&q='+encodeURIComponent(q)}
+function gPublic(q){return 'https://www.google.com/search?q='+encodeURIComponent(q)}
+function isBlocked(u){var h;try{h=new URL(u).hostname}catch(e){return false}return BLOCK.some(function(b){return h===b||h.slice(-(b.length+1))==='.'+b})}
+function frameSrc(e){
+ if(e.q)return gSearch(e.q);
+ var u=e.u,m;
+ m=u.match(/youtube\.com\/watch\?v=([\w-]{6,})/)||u.match(/youtu\.be\/([\w-]{6,})/);
+ if(m)return 'https://www.youtube.com/embed/'+m[1];
+ if(/^https?:\/\/(www\.)?google\.[a-z.]+\/?$/.test(u))return 'https://www.google.com/webhp?igu=1';
+ return u;
+}
+function publicUrl(e){if(e.t==='start')return '';if(e.q)return gPublic(e.q);return e.u.replace('webhp?igu=1','').replace('&output=embed','')}
+function titleOf(e){return e.t==='start'?'Start Page':e.q?e.q:hostOf(e.u)}
+function isYTHome(u){return /^https?:\/\/(www\.|m\.)?youtube\.com\/?$/.test(u)}
+function parse(v){
+ v=v.trim();if(!v)return null;
+ if(/^https?:\/\/\S+$/i.test(v))return {t:'page',u:v};
+ if(/^[^\s\/]+\.[a-z]{2,}(:\d+)?(\/\S*)?$/i.test(v))return {t:'page',u:'https://'+v};
+ return {t:'page',q:v};
+}
 
-      function openApp(app, push) {
-        closeMoreApps();
-        if (current !== app.key) {
-          loading.classList.remove('hide');
-          frame.src = app.url;
-          frame.title = app.name;
-        }
-        current = app.key;
-        title.textContent = app.name;
-        extLink.href = app.url;
-        viewer.classList.add('open');
-        viewer.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('gz-viewer-open');
-        markDock(app);
-        if (push !== false) history.pushState({ gzApp: app.key }, '', '#app=' + app.key);
-      }
+function newTab(priv){var t={id:uid++,priv:!!priv,h:[{t:'start'}],i:0};S.tabs.push(t);S.cur=t.id;return t}
+function cur(){for(var i=0;i<S.tabs.length;i++)if(S.tabs[i].id===S.cur)return S.tabs[i];return S.tabs[0]}
+function ent(t){t=t||cur();return t.h[t.i]}
 
-      function closeApp(push) {
-        viewer.classList.remove('open');
-        viewer.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('gz-viewer-open');
-        markDock(null);
-        if (push !== false && location.hash.indexOf('#app=') === 0) {
-          history.pushState({}, '', location.pathname + location.search);
-        }
-      }
+var saved=ls.get('gt_tabs',null);
+if(saved&&saved.tabs&&saved.tabs.length){saved.tabs.forEach(function(x){var n=newTab(false);n.h=x.h;n.i=x.i});S.cur=S.tabs[Math.min(saved.cur||0,S.tabs.length-1)].id}
+else newTab(false);
 
-      frame.addEventListener('load', function () {
-        if (frame.getAttribute('src')) loading.classList.add('hide');
-      });
+function save(){
+ var np=S.tabs.filter(function(t){return !t.priv}),ci=np.indexOf(cur());
+ ls.set('gt_tabs',{tabs:np.map(function(t){return {h:t.h,i:t.i}}),cur:ci<0?0:ci});
+ ls.set('gt_hist',hist);ls.set('gt_marks',marks);
+}
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.k);toast.k=setTimeout(function(){t.classList.remove('show')},2200)}
+function recents(){var s={},o=[];hist.forEach(function(h){if(h.q&&!s[h.q]){s[h.q]=1;o.push(h.q)}});return o}
+window.__fe=function(img){var b=document.createElement('b');b.className='lt '+img.className;b.textContent=img.getAttribute('data-l');img.replaceWith(b)};
+function imgTag(u,cls){return '<img class="'+(cls||'')+'" src="'+esc(fav(u))+'" alt="" data-l="'+esc(hostOf(u).charAt(0).toUpperCase())+'" onerror="__fe(this)">'}
 
-      // Intercept app links on phones (capture phase, so it runs before anything else)
-      document.addEventListener('click', function (e) {
-        if (!mobile.matches || e.metaKey || e.ctrlKey || e.shiftKey) return;
-        var a = e.target.closest('a');
-        if (!a || a.id === 'gzExternal') return;
+/* ---------- Page loading ---------- */
+function prog(on){
+ var p=$('#prog');
+ if(on){p.style.transition='none';p.style.width='0';p.style.opacity='1';p.offsetWidth;p.style.transition='width 2.5s cubic-bezier(.1,.7,.3,1),opacity .3s';p.style.width='82%'}
+ else{p.style.transition='width .25s ease,opacity .4s .25s';p.style.width='100%';p.style.opacity='0'}
+}
+function dropFrame(t){if(frames[t.id]){frames[t.id].remove();delete frames[t.id]}}
+function makeFrame(t){
+ dropFrame(t);
+ var e=ent(t),f=document.createElement('iframe');
+ f.className='frame';
+ f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation');
+ f.setAttribute('allow','fullscreen; autoplay; encrypted-media; picture-in-picture; geolocation');
+ f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+ f.hidden=true;
+ f.addEventListener('load',function(){if(t.id===S.cur)prog(false)});
+ f.src=frameSrc(e);
+ $('#pages').appendChild(f);
+ frames[t.id]=f;
+ if(t.id===S.cur)prog(true);
+ return f;
+}
 
-        // Home in the dock closes the app
-        if (a.getAttribute('href') === '#' && a.closest('.mobile-bottom-nav')) {
-          if (viewer.classList.contains('open')) { e.preventDefault(); closeApp(); }
-          return;
-        }
+function showPage(){
+ var t=cur(),e=ent(t);
+ Object.keys(frames).forEach(function(k){frames[k].hidden=true});
+ $('#start').hidden=true;$('#blocked').hidden=true;
+ if(e.t==='start'){renderStart();$('#start').hidden=false;prog(false);return}
+ if(!e.q&&(isBlocked(e.u)||isYTHome(e.u))){renderBlocked(e);$('#blocked').hidden=false;prog(false);return}
+ var f=frames[t.id];
+ if(!f||f.dataset.k!==JSON.stringify(e)){f=makeFrame(t);f.dataset.k=JSON.stringify(e)}
+ f.hidden=false;
+}
 
-        var app = appFor(a.getAttribute('href'));
-        if (!app) return;
-        e.preventDefault();
-        openApp(app);
-      }, true);
+function go(entry){
+ var t=cur();
+ t.h=t.h.slice(0,t.i+1);t.h.push(entry);t.i=t.h.length-1;
+ if(!t.priv&&entry.t!=='start'){hist.unshift(Object.assign({at:Date.now()},entry));if(hist.length>100)hist.length=100}
+ S.editing=false;S.sw=false;closeMenu();closeBm();
+ dropFrame(t);
+ render();
+}
 
-      document.getElementById('gzClose').addEventListener('click', function () { closeApp(); });
-      document.getElementById('gzReload').addEventListener('click', function () {
-        var app = byKey(current);
-        if (!app) return;
-        loading.classList.remove('hide');
-        frame.src = app.url;
-      });
+/* ---------- Views ---------- */
+function favGrid(){
+ return '<div class="favs">'+FAVS.map(function(f){
+  return '<button class="fav press" data-act="u" data-u="'+esc(f.u)+'"><span class="tile glass">'+imgTag(f.u)+'</span><span class="fl">'+esc(f.n)+'</span></button>';
+ }).join('')+'</div>';
+}
+function recentList(n){
+ var r=recents().slice(0,n);
+ return r.length?'<div class="list glass">'+r.map(function(q){return '<button class="row" data-act="q" data-v="'+esc(q)+'"><svg class="i s"><use href="#i-clock"/></svg><span class="tx">'+esc(q)+'</span></button>'}).join('')+'</div>':'';
+}
+function renderStart(){
+ var t=cur(),h='';
+ var hr=new Date().getHours();
+ h+='<div class="hello">'+(t.priv?'Private':(hr<12?'Good morning':hr<18?'Good afternoon':'Good evening'))+'</div>';
+ if(t.priv)h+='<div class="privcard glass"><h3>Private Browsing</h3><p>Pages you open in Private tabs are not added to history or saved when you close this page.</p></div>';
+ h+='<div class="sec">Favourites</div>'+favGrid();
+ if(!t.priv){var r=recentList(6);h+='<div class="sec">Recent searches</div>'+(r||'<div class="empty">Tap the address bar to search Google.</div>')}
+ $('#start').innerHTML=h;
+}
+function renderBlocked(e){
+ var hn=hostOf(e.u);
+ $('#blocked').innerHTML='<div class="blk glass"><span class="tile glass">'+imgTag(e.u)+'</span><b>'+esc(hn)+'</b><p>'+esc(hn)+' does not allow itself to be shown inside another page, so it opens in a full browser tab.</p><a class="cta press" href="'+esc(publicUrl(e))+'" target="_blank" rel="noopener"><svg class="i"><use href="#i-out"/></svg>Open '+esc(hn)+'</a></div>';
+}
 
-      // Phone back button closes / switches apps
-      window.addEventListener('popstate', function () {
-        var m = location.hash.match(/^#app=(\w+)/);
-        var app = m && byKey(m[1]);
-        if (app && mobile.matches) openApp(app, false); else closeApp(false);
-      });
+function render(){
+ var t=cur(),e=ent(t),ph=$('#phone');
+ ph.classList.toggle('priv',S.sw?S.mode==='p':t.priv);
+ ph.classList.toggle('editing',S.editing);
+ $('#scrim').classList.toggle('on',S.editing);
+ var lb=$('#capLabel');
+ if(e.t==='start'){lb.className='ph';lb.innerHTML='<svg class="i s"><use href="#i-search"/></svg><span>Search or URL</span>'}
+ else{lb.className='';lb.innerHTML='<svg class="i s"><use href="#i-lock"/></svg><span>'+esc(e.q?e.q:hostOf(e.u))+'</span>'}
+ $('#back').disabled=t.i<=0;
+ $('#reload').style.visibility=e.t==='start'?'hidden':'visible';
+ var ntabs=S.tabs.filter(function(x){return !x.priv}).length;
+ $('#tabCount').textContent=ntabs>99?'99+':ntabs;
+ $('#switcher').hidden=!S.sw;
+ if(S.sw)renderGrid();
+ showPage();
+ save();
+}
 
-      // Deep link: yoursite/#app=chat opens straight into the app on phones
-      var start = location.hash.match(/^#app=(\w+)/);
-      if (start && byKey(start[1]) && mobile.matches) openApp(byKey(start[1]), false);
+/* ---------- Tab overview ---------- */
+function renderGrid(){
+ var p=S.mode==='p',list=S.tabs.filter(function(t){return t.priv===p});
+ $('#segN').classList.toggle('on',!p);$('#segP').classList.toggle('on',p);
+ $('#shead').textContent=p?(list.length?list.length+' Private Tab'+(list.length>1?'s':''):'Private Browsing'):list.length+' Tab'+(list.length>1?'s':'');
+ $('#grid').innerHTML=list.length?list.map(function(t,ix){
+  var e=ent(t),shot,metaIcon;
+  if(e.t==='start'){shot='<div class="mini"><i></i><i></i><i></i><i></i><i></i><i></i></div>';metaIcon='<svg class="i s ft"><use href="#i-search"/></svg>'}
+  else if(e.q){shot='<div class="gq"><b>'+esc(e.q)+'</b>google.com<i></i><i style="width:80%"></i><i style="width:60%"></i><i></i><i style="width:70%"></i></div>';metaIcon=imgTag('https://google.com')}
+  else{shot='<div class="big">'+imgTag(e.u)+'</div>';metaIcon=imgTag(e.u)}
+  return '<div class="card glass'+(t.id===S.cur?' sel':'')+'" style="animation-delay:'+(ix*30)+'ms" role="button" tabindex="0" data-id="'+t.id+'"><button class="cx glass press" data-close="'+t.id+'" aria-label="Close tab"><svg class="i"><use href="#i-x"/></svg></button><div class="shot">'+shot+'</div><div class="meta">'+metaIcon+'<span class="t">'+esc(titleOf(e))+'</span></div></div>';
+ }).join(''):'<div class="empty" style="grid-column:1/-1;text-align:center;padding-top:60px">No Private tabs open. Tap + to start one.</div>';
+}
+function closeTab(id){
+ var t=S.tabs.filter(function(x){return x.id===id})[0];if(!t)return;
+ dropFrame(t);
+ S.tabs=S.tabs.filter(function(x){return x.id!==id});
+ if(!S.tabs.filter(function(x){return !x.priv}).length){var keep=S.cur;newTab(false);if(keep!==id)S.cur=keep}
+ if(S.cur===id){var pool=S.tabs.filter(function(x){return x.priv===t.priv});S.cur=(pool[pool.length-1]||S.tabs[0]).id}
+ render();
+}
+function openSwitcher(){S.mode=cur().priv?'p':'n';S.sw=true;S.editing=false;closeMenu();render()}
 
-      // Going wider than phone size closes the viewer
-      var onChange = function (ev) { if (!ev.matches && viewer.classList.contains('open')) closeApp(); };
-      if (mobile.addEventListener) mobile.addEventListener('change', onChange); else mobile.addListener(onChange);
-    })();
-  </script>
+/* ---------- Address editing ---------- */
+function enterEdit(){
+ var e=ent();S.editing=true;closeMenu();render();
+ var i=$('#urlInput');i.value=e.t==='start'?'':(e.q||publicUrl(e));
+ i.focus();try{i.select()}catch(x){}
+ suggest();
+}
+function exitEdit(){S.editing=false;$('#urlInput').blur();render()}
+function suggest(){
+ var q=$('#urlInput').value.trim(),ql=q.toLowerCase(),h='';
+ if(!q){
+  h='<div class="sec">Favourites</div>'+favGrid();
+  if(!cur().priv){var r=recentList(5);if(r)h+='<div class="sec">Recent searches</div>'+r}
+ }else{
+  var rows=[],p=parse(q);
+  rows.push('<button class="row" data-act="q" data-v="'+esc(q)+'"><svg class="i s"><use href="#i-search"/></svg><span class="tx">'+esc(q)+'<small>Google Search</small></span></button>');
+  if(p&&p.u)rows.unshift('<button class="row" data-act="u" data-u="'+esc(p.u)+'">'+imgTag(p.u,'fi')+'<span class="tx">'+esc(hostOf(p.u))+'<small>'+esc(p.u)+'</small></span></button>');
+  if(!cur().priv)recents().filter(function(x){return x!==q&&x.toLowerCase().indexOf(ql)>-1}).slice(0,4).forEach(function(x){rows.push('<button class="row" data-act="q" data-v="'+esc(x)+'"><svg class="i s"><use href="#i-clock"/></svg><span class="tx">'+esc(x)+'</span></button>')});
+  marks.concat(FAVS.map(function(f){return {u:f.u,t:f.n}})).filter(function(m){return (m.t+' '+m.u).toLowerCase().indexOf(ql)>-1}).slice(0,3).forEach(function(m){rows.push('<button class="row" data-act="u" data-u="'+esc(m.u)+'">'+imgTag(m.u,'fi')+'<span class="tx">'+esc(m.t)+'<small>'+esc(hostOf(m.u))+'</small></span></button>')});
+  h='<div class="list glass">'+rows.join('')+'</div>';
+ }
+ $('#suggIn').innerHTML=h;
+}
 
+/* ---------- Menu ---------- */
+function openMenu(){
+ var t=cur(),e=ent(t),m=$('#menu');
+ m.querySelector('[data-m=fwd]').disabled=t.i>=t.h.length-1;
+ ['reload','share','open','mark'].forEach(function(k){m.querySelector('[data-m='+k+']').disabled=e.t==='start'});
+ m.classList.add('on');$('#menuCatch').classList.add('on');
+}
+function closeMenu(){$('#menu').classList.remove('on');$('#menuCatch').classList.remove('on')}
+function menuAct(k){
+ var t=cur(),e=ent(t),u=publicUrl(e);
+ closeMenu();
+ if(k==='fwd'&&t.i<t.h.length-1){t.i++;dropFrame(t);render()}
+ else if(k==='reload'){dropFrame(t);render()}
+ else if(k==='share'){
+  if(navigator.share){navigator.share({title:titleOf(e),url:u}).catch(function(){})}
+  else{try{navigator.clipboard.writeText(u).then(function(){toast('Link copied')},function(){toast(u)})}catch(x){toast(u)}}
+ }
+ else if(k==='open'){window.open(u,'_blank','noopener')}
+ else if(k==='mark'){if(!marks.some(function(m){return m.u===u})){marks.unshift({u:u,t:titleOf(e)});save()}toast('Added to Bookmarks')}
+ else if(k==='bm')openBm();
+ else if(k==='new'){newTab(false);render();enterEdit()}
+ else if(k==='newp'){newTab(true);render();enterEdit()}
+}
+
+/* ---------- Bookmarks & history ---------- */
+function renderBm(){
+ var b=S.bmTab==='b',h='';
+ $('#segB').classList.toggle('on',b);$('#segH').classList.toggle('on',!b);
+ if(b){
+  h=marks.length?'<div class="list glass">'+marks.map(function(m,i){return '<div class="row" style="padding:0"><button class="row" style="border:0;flex:1;min-width:0" data-act="u" data-u="'+esc(m.u)+'">'+imgTag(m.u,'fi')+'<span class="tx">'+esc(m.t)+'<small>'+esc(hostOf(m.u))+'</small></span></button><button class="rm" data-rm="'+i+'" aria-label="Remove bookmark"><svg class="i s"><use href="#i-xc"/></svg></button></div>'}).join('')+'</div>':'<div class="empty">No bookmarks yet. Open a page, tap ⋯ and choose Add Bookmark.</div>';
+ }else{
+  h=hist.length?'<div class="list glass">'+hist.slice(0,60).map(function(x){
+   return x.q?'<button class="row" data-act="q" data-v="'+esc(x.q)+'"><svg class="i s"><use href="#i-search"/></svg><span class="tx">'+esc(x.q)+'<small>Google Search</small></span></button>':'<button class="row" data-act="u" data-u="'+esc(x.u)+'">'+imgTag(x.u,'fi')+'<span class="tx">'+esc(hostOf(x.u))+'<small>'+esc(x.u)+'</small></span></button>';
+  }).join('')+'</div><button class="lnk" data-act="clear">Clear History</button>':'<div class="empty">No history yet. Private tabs are never saved here.</div>';
+ }
+ $('#bmBody').innerHTML=h;
+}
+function openBm(){S.bmTab='b';$('#bmLayer').hidden=false;renderBm()}
+function closeBm(){$('#bmLayer').hidden=true}
+
+/* ---------- Events ---------- */
+function act(ev){
+ var el=ev.target.closest('[data-act]');
+ if(el){
+  var a=el.getAttribute('data-act');
+  if(a==='u')go({t:'page',u:el.getAttribute('data-u')});
+  else if(a==='q')go({t:'page',q:el.getAttribute('data-v')});
+  else if(a==='clear'){hist=[];save();renderBm();toast('History cleared')}
+  return;
+ }
+ var rm=ev.target.closest('[data-rm]');
+ if(rm){marks.splice(+rm.getAttribute('data-rm'),1);save();renderBm()}
+}
+['#start','#suggIn','#bmBody'].forEach(function(s){$(s).addEventListener('click',act)});
+$('#sugg').addEventListener('pointerdown',function(ev){if(ev.target.closest('button'))ev.preventDefault()});
+$('#scrim').addEventListener('click',exitEdit);
+$('#capLabel').addEventListener('click',enterEdit);
+$('#cancel').addEventListener('click',exitEdit);
+$('#clr').addEventListener('pointerdown',function(ev){ev.preventDefault();$('#urlInput').value='';suggest()});
+$('#urlInput').addEventListener('input',suggest);
+$('#urlInput').addEventListener('keydown',function(ev){
+ if(ev.key==='Enter'){ev.preventDefault();var p=parse(this.value);if(p){this.blur();go(p)}}
+ else if(ev.key==='Escape')exitEdit();
+});
+$('#back').addEventListener('click',function(){var t=cur();if(t.i>0){t.i--;dropFrame(t);render()}});
+$('#reload').addEventListener('click',function(){dropFrame(cur());render()});
+$('#more').addEventListener('click',function(){$('#menu').classList.contains('on')?closeMenu():openMenu()});
+$('#menuCatch').addEventListener('click',closeMenu);
+$('#menu').addEventListener('click',function(ev){var b=ev.target.closest('[data-m]');if(b&&!b.disabled)menuAct(b.getAttribute('data-m'))});
+$('#tabsBtn').addEventListener('click',openSwitcher);
+$('#swDone').addEventListener('click',function(){S.sw=false;render()});
+$('#segN').addEventListener('click',function(){S.mode='n';$('#phone').classList.remove('priv');renderGrid()});
+$('#segP').addEventListener('click',function(){S.mode='p';$('#phone').classList.add('priv');renderGrid()});
+$('#newTab').addEventListener('click',function(){newTab(S.mode==='p');S.sw=false;render();enterEdit()});
+$('#grid').addEventListener('click',function(ev){
+ var cx=ev.target.closest('[data-close]');if(cx){ev.stopPropagation();closeTab(+cx.getAttribute('data-close'));return}
+ var c=ev.target.closest('.card');if(c){S.cur=+c.getAttribute('data-id');S.sw=false;render()}
+});
+$('#grid').addEventListener('keydown',function(ev){if((ev.key==='Enter'||ev.key===' ')&&ev.target.classList.contains('card')){ev.preventDefault();S.cur=+ev.target.getAttribute('data-id');S.sw=false;render()}});
+$('#bmDone').addEventListener('click',closeBm);
+$('#bmScrim').addEventListener('click',closeBm);
+$('#segB').addEventListener('click',function(){S.bmTab='b';renderBm()});
+$('#segH').addEventListener('click',function(){S.bmTab='h';renderBm()});
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape'){if(!$('#bmLayer').hidden)closeBm();else if(S.sw){S.sw=false;render()}else closeMenu()}});
+
+function tick(){var d=new Date();$('#clock').textContent=d.getHours()+':'+('0'+d.getMinutes()).slice(-2)}
+tick();setInterval(tick,30000);
+render();
+})();
+</script>
 </body>
 </html>
+
+</body></html>
